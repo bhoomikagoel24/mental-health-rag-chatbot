@@ -1,0 +1,18 @@
+# Virtual Environments
+venv/
+venv1/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Local notes / helper files
+helper.txt
+Q.txt
+
+# Packaging metadata
+*.egg-info/

@@ -77,8 +77,8 @@ ROOT_DIRECTORY/
 
 ### 1. Clone the repository
 ```bash
-git clone https://...............................
-cd Medjcsnjk
+git clone https://github.com/bhoomikagoel24/mental-health-rag-chatbot.git
+cd mental-health-rag-chatbot
 ```
 
 ---
@@ -142,6 +142,12 @@ Overall Rating: ⭐⭐⭐ Good
 ```
 
 ## 👩‍💻 Author
-Bhoomika Goel
-Aspiring AI-Driven Software Engineer
-`Learning purpose
+
+**Bhoomika Goel**  
+Aspiring AI-Driven Software Engineer  
+
+---
+
+## ⚠️ Disclaimer
+This project is developed for **educational purposes only**.  
+It does **not** provide medical diagnosis or treatment and should not be used as a substitute for professional medical advice.

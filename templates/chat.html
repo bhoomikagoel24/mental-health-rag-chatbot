@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalmChat</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #d9f0ff, #f0f7f4);
+        font-family: "Inter", sans-serif;
+        color: #333;
+    }
+
+    .chat-container {
+        width: 480px;
+        height: 68vh;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        box-shadow: 0px 8px 25px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        background: #a7e0d9;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    .header img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .header .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #045d56;
+    }
+
+    .header .sub {
+        font-size: 12px;
+        color: #045d56;
+        margin-top: -3px;
+    }
+
+    #chatbox {
+        flex: 1;
+        padding: 18px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: #e8f7f4;
+    }
+
+    .msg {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .bot {
+        background: #d0f0e0;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+    }
+
+    .user {
+        background: #a0d8f1;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+        color: #fff;
+    }
+
+    .input-area {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        background: #c5f0e7;
+    }
+
+    #msgInput {
+        flex: 1;
+        padding: 12px 16px;
+        background: rgba(255,255,255,0.6);
+        border: none;
+        border-radius: 10px;
+        color: #333;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .send-btn {
+        background: #4fc3f7;
+        padding: 11px 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .send-btn img {
+        width: 20px;
+        filter: invert(1);
+    }
+</style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="header">
+        <!-- Calm/mental health-themed avatar -->
+        <img src="https://cdn-icons-png.flaticon.com/512/3595/3595452.png" alt="bot">
+        <div>
+            <div class="title">CalmChat</div>
+            <div class="sub">Talk to feel better 🌿</div>
+        </div>
+    </div>
+
+    <div id="chatbox">
+        <div class="msg bot">Hello! I'm here to listen. How are you feeling today?</div>
+    </div>
+
+    <div class="input-area">
+        <input id="msgInput" type="text" placeholder="Type your message..." onkeypress="if(event.key==='Enter'){sendMessage();}" />
+        <button class="send-btn" onclick="sendMessage()">
+            <img src="https://cdn-icons-png.flaticon.com/512/3682/3682321.png" alt="send">
+        </button>
+    </div>
+</div>
+
+<script>
+const chatbox = document.getElementById("chatbox");
+
+function addMessage(text, sender) {
+    let msg = document.createElement("div");
+    msg.classList.add("msg", sender);
+    msg.innerHTML = text;
+    chatbox.appendChild(msg);
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+function sendMessage() {
+    const input = document.getElementById("msgInput");
+    const text = input.value.trim();
+    if (text === "") return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    // Show temporary typing indicator
+    let typingMsg = document.createElement("div");
+    typingMsg.classList.add("msg", "bot");
+    typingMsg.innerHTML = "Typing...";
+    chatbox.appendChild(typingMsg);
+    chatbox.scrollTop = chatbox.scrollHeight;
+
+    // Send user message to your RAG-based backend
+    fetch("/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `msg=${encodeURIComponent(text)}`
+    })
+    .then(response => response.text())
+    .then(reply => {
+        chatbox.removeChild(typingMsg); // remove typing indicator
+        // addMessage(reply, "bot"); // add RAG response/
+        addMessage(reply || "I hear you. Take a deep breath 🌿", "bot"); // add RAG response
+    })
+    .catch(err => {
+        console.error(err);
+        chatbox.removeChild(typingMsg);
+        addMessage("Sorry, something went wrong. Please try again.", "bot");
+    });
+}
+</script>
+</body>
+</html>
